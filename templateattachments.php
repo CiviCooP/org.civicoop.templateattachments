@@ -36,7 +36,8 @@ function templateattachments_civicrm_buildForm($formName, &$form) {
   global $templateattachments_message_form_build;
   if ($formName == 'CRM_Admin_Form_MessageTemplates') {
     $template_id = $form->getVar('_id') ? $form->getVar('_id') : NULL;
-    CRM_Core_BAO_File::buildAttachment($form, 'civicrm_msg_template', $template_id, 3);
+    $numAttachments = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'max_attachments');
+    CRM_Core_BAO_File::buildAttachment($form, 'civicrm_msg_template', $template_id, $numAttachments);
     $form->updateAttributes(array('enctype' => 'multipart/form-data'));
     $form->setMaxFileSize();
     $templateattachments_message_form_build = true;
