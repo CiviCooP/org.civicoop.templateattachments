@@ -9,9 +9,13 @@ $templateattachments_template_id = false;
 function templateattachments_civicrm_alterMailParams(&$params, $context) {
   global $templateattachments_template_id;
   $template_id = false;
-  if (!empty($templateattachments_template_id)) {
+  if (!empty($params['messageTemplateID'])) {
+    $template_id = $params['messageTemplateID'];
+  }
+  elseif (!empty($templateattachments_template_id)) {
     $template_id = $templateattachments_template_id;
-  } elseif (isset($params['job_id'])) {
+  }
+  elseif (isset($params['job_id'])) {
     $job_id = $params['job_id'];
     $sql = "SELECT civicrm_mailing.msg_template_id
             FROM civicrm_mailing_job
@@ -40,6 +44,11 @@ function templateattachments_civicrm_buildForm($formName, &$form) {
     CRM_Core_BAO_File::buildAttachment($form, 'civicrm_msg_template', $template_id, $numAttachments);
     $form->updateAttributes(array('enctype' => 'multipart/form-data'));
     $form->setMaxFileSize();
+    // This allows us to switch back to and edit the message template without attachment
+    if ($form->elementExists('file_type')) {
+      $elem = $form->getElement('file_type');
+      $elem->unfreeze();
+    }
     $templateattachments_message_form_build = true;
   }
 }
@@ -69,34 +78,23 @@ function templateattachments_civicrm_post($op, $objectName, $objectId, &$objectR
   global $templateattachments_message_form;
   if ($objectName == 'MessageTemplate' && $templateattachments_message_form_build) {
     $params = array(); //used for attachments
-    $templateattachments_message_form_files = $templateattachments_message_form->getVar('_submitFiles');
     $templateattachments_message_form_values = $templateattachments_message_form->controller->exportValues();
-    $templateattachments_message_form_values = array_merge($templateattachments_message_form_values, $templateattachments_message_form_files);
-
     CRM_Core_BAO_File::formatAttachment($templateattachments_message_form_values, $params, 'civicrm_msg_template', $objectId);
 
     $numAttachments = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'max_attachments');
     for ($i = 1; $i <= $numAttachments; $i++) {
       if (isset($params["attachFile_$i"]) &&  is_array($params["attachFile_$i"]) && !empty($params["attachFile_$i"]['location'])) {
-        $path = explode('/', $templateattachments_message_form_files["attachFile_$i"]['tmp_name']);
-        $filepath = $path[count($path) - 1];
-        $filename = $params["attachFile_".$i]["location"];
-        $filename = str_replace(" ", "_", $filename);
-        $tmpFileName = str_replace("/".$filepath, "/".$filename, $templateattachments_message_form_files["attachFile_$i"]['tmp_name']);
-
-        if (rename($templateattachments_message_form_files["attachFile_$i"]['tmp_name'], $tmpFileName)) {
-          CRM_Core_BAO_File::filePostProcess(
-            $tmpFileName,
-            NULL,
-            'civicrm_msg_template',
-            $objectId,
-            NULL,
-            TRUE,
-            $params["attachFile_$i"],
-            "attachFile_$i",
-            $params["attachFile_$i"]['type']
-          );
-        }
+        CRM_Core_BAO_File::filePostProcess(
+          $params["attachFile_".$i]["location"],
+          NULL,
+          'civicrm_msg_template',
+          $objectId,
+          NULL,
+          TRUE,
+          $params["attachFile_$i"],
+          "attachFile_$i",
+          $params["attachFile_$i"]['type']
+        );
       }
     }
   }
