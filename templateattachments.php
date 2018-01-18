@@ -23,6 +23,14 @@ function templateattachments_civicrm_alterMailParams(&$params, $context) {
             WHERE civicrm_mailing_job.id = %1";
     $sql_params[1] = array($job_id, 'Integer');
     $template_id = CRM_Core_DAO::singleValueQuery($sql, $sql_params);
+  } elseif (isset($params['groupName']) && $params['groupName'] == 'msg_tpl_workflow_contribution' && !empty($params['valueName'])) {
+  	$sql = 'SELECT mt.id as id
+            FROM civicrm_msg_template mt
+            JOIN civicrm_option_value ov ON workflow_id = ov.id
+            JOIN civicrm_option_group og ON ov.option_group_id = og.id
+            WHERE og.name = %1 AND ov.name = %2 AND mt.is_default = 1';
+    $sql_params = array(1 => array($params['groupName'], 'String'), 2 => array($params['valueName'], 'String'));
+		$template_id = CRM_Core_DAO::singleValueQuery($sql, $sql_params);
   }
 
   if ($template_id) {
