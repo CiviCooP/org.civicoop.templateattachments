@@ -59,7 +59,7 @@
 {literal}
 <script type="text/javascript">
     CRM.$(function($) {
-        $('.crm-accordion-wrapper.crm-plaint_text_email-accordion').after($('#templateattachments_wrapper'));
+        $('#templateattachments_wrapper').insertBefore($('#message_templates #pdf_format'));
 
         var $form = $("form.CRM_Admin_Form_MessageTemplates");
         $form
