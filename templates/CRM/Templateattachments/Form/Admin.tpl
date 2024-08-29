@@ -1,8 +1,8 @@
 <div id="templateattachments_wrapper">
-    <div class="crm-accordion-wrapper crm-html_email-accordion ">
-        <div class="crm-accordion-header">
+    <details class="crm-accordion-bold crm-html_email-accordion" open>
+        <summary>
             {ts}Attachments{/ts}
-        </div><!-- /.crm-accordion-header -->
+        </summary>
         <div class="crm-accordion-body">
                 <table>
                 {if $form.attachFile_1}
@@ -53,7 +53,7 @@
                 {/if}
                 </table>
         </div><!-- /.crm-accordion-body -->
-    </div><!-- /.crm-accordion-wrapper -->
+    </details>
 </div>
 
 {literal}
