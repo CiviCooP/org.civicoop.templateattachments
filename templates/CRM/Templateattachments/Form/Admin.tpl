@@ -8,7 +8,7 @@
                 {if $form.attachFile_1}
                     <tr>
                         <td class="label">{$form.attachFile_1.label}</td>
-                        <td>{$form.attachFile_1.html}&nbsp;{$form.attachDesc_1.html}<a href="#" class="crm-hover-button crm-clear-attachment" style="visibility: hidden;" title="{ts}Clear{/ts}"><span class="icon ui-icon-close"></span></a>
+                        <td>{$form.attachFile_1.html}&nbsp;{$form.attachDesc_1.html}<a href="#" class="crm-hover-button crm-clear-attachment" style="visibility: hidden;" title="{ts escape='htmlattribute'}Clear{/ts}"><span class="icon ui-icon-close"></span></a>
                             <div class="description">{ts}Browse to the <strong>file</strong> you want to upload.{/ts}{if $maxAttachments GT 1} {ts 1=$maxAttachments}You can have a maximum of %1 attachment(s).{/ts}{/if} {ts 1=$config->maxFileSize}Each file must be less than %1M in size. You can also add a short description.{/ts}</div>
                         </td>
                     </tr>
@@ -20,7 +20,7 @@
                         <tr class="attachment-fieldset solid-border-top"><td colspan="2"></td></tr>
                         <tr>
                             <td class="label">{$form.attachFile_1.label}</td>
-                            <td>{$form.$attachName.html}&nbsp;{$form.$attachDesc.html}<a href="#" class="crm-hover-button crm-clear-attachment" style="visibility: hidden;" title="{ts}Clear{/ts}"><span class="icon ui-icon-close"></span></a></td>
+                            <td>{$form.$attachName.html}&nbsp;{$form.$attachDesc.html}<a href="#" class="crm-hover-button crm-clear-attachment" style="visibility: hidden;" title="{ts escape='htmlattribute'}Clear{/ts}"><span class="icon ui-icon-close"></span></a></td>
                         </tr>
                     {/section}
                 {/if}
@@ -34,7 +34,7 @@
                                     <strong><a class="crm-attachment" href="{$attVal.url}">{$attVal.cleanName}</a></strong>
                                     {if $attVal.description}&nbsp;-&nbsp;{$attVal.description}{/if}
                                     {if $attVal.deleteURLArgs}
-                                        <a href="#" class="crm-hover-button delete-attachment" data-filename="{$attVal.cleanName}" data-args="{$attVal.deleteURLArgs}" title="{ts}Delete File{/ts}"><span class="icon delete-icon"></span></a>
+                                        <a href="#" class="crm-hover-button delete-attachment" data-filename="{$attVal.cleanName}" data-args="{$attVal.deleteURLArgs}" title="{ts escape='htmlattribute'}Delete File{/ts}"><span class="icon delete-icon"></span></a>
                                     {/if}
                                     {if !empty($attVal.tag)}
                                         <br/>
