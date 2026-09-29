@@ -21,7 +21,7 @@ function templateattachments_civicrm_alterMailParams(&$params, $context) {
             FROM civicrm_mailing_job
             INNER JOIN civicrm_mailing ON civicrm_mailing_job.mailing_id = civicrm_mailing.id
             WHERE civicrm_mailing_job.id = %1";
-    $sql_params[1] = array($job_id, 'Integer');
+    $sql_params[1] = [$job_id, 'Integer'];
     $template_id = CRM_Core_DAO::singleValueQuery($sql, $sql_params);
   } elseif (isset($params['groupName']) && $params['groupName'] == 'msg_tpl_workflow_contribution' && !empty($params['valueName'])) {
   	$sql = 'SELECT mt.id as id
@@ -29,7 +29,7 @@ function templateattachments_civicrm_alterMailParams(&$params, $context) {
             JOIN civicrm_option_value ov ON workflow_id = ov.id
             JOIN civicrm_option_group og ON ov.option_group_id = og.id
             WHERE og.name = %1 AND ov.name = %2 AND mt.is_default = 1';
-    $sql_params = array(1 => array($params['groupName'], 'String'), 2 => array($params['valueName'], 'String'));
+    $sql_params = [1 => [$params['groupName'], 'String'], 2 => [$params['valueName'], 'String']];
 		$template_id = CRM_Core_DAO::singleValueQuery($sql, $sql_params);
   }
 
@@ -50,7 +50,7 @@ function templateattachments_civicrm_buildForm($formName, &$form) {
     $template_id = $form->getVar('_id') ? $form->getVar('_id') : NULL;
     $numAttachments = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'max_attachments');
     CRM_Core_BAO_File::buildAttachment($form, 'civicrm_msg_template', $template_id, $numAttachments);
-    $form->updateAttributes(array('enctype' => 'multipart/form-data'));
+    $form->updateAttributes(['enctype' => 'multipart/form-data']);
     $form->setMaxFileSize();
     // This allows us to switch back to and edit the message template without attachment
     if ($form->elementExists('file_type')) {
@@ -85,7 +85,7 @@ function templateattachments_civicrm_post($op, $objectName, $objectId, &$objectR
   global $templateattachments_message_form_build;
   global $templateattachments_message_form;
   if ($objectName == 'MessageTemplate' && $templateattachments_message_form_build) {
-    $params = array(); //used for attachments
+    $params = []; //used for attachments
     $templateattachments_message_form_values = $templateattachments_message_form->controller->exportValues();
     CRM_Core_BAO_File::formatAttachment($templateattachments_message_form_values, $params, 'civicrm_msg_template', $objectId);
 
